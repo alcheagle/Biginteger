@@ -1,0 +1,13 @@
+language: cpp
+
+compiler:
+    - g++
+    - clang
+
+install:
+    - sudo apt-get install libboost-regex-dev
+
+script:
+    - cmake .
+    - make
+    - ctest .

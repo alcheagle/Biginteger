@@ -86,7 +86,7 @@ namespace bigint{
 
 		//Input&Output
 		friend std::istream &operator>>(std::istream &, UnsignedBigint &);
-		friend std::ostream &operator<<(std::ostream &, UnsignedBigint);
+		friend std::ostream &operator<<(std::ostream &, const UnsignedBigint&);
 
 		//Helpers
 		void clear();
@@ -118,6 +118,8 @@ namespace bigint{
 
 		//size
 		unsigned int size() const;
+		
+		std::string to_string() const;
 	};
 }
 

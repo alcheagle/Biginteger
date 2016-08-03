@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
+project(Bigint)
+
 set(CMAKE_BINARY_DIR ${PROJECT_SOURCE_DIR}/build)
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR})
 set(SOURCE_DIR ${PROJECT_SOURCE_DIR}/src)
@@ -38,6 +40,8 @@ if(Boost_FOUND)
     include_directories(${Boost_INCLUDE_DIRS}) 
     target_link_libraries(Bigint ${Boost_LIBRARIES})
 endif()
+
+export(PACKAGE Bigint)
 
 if(${ENABLE_TESTS})
     ENABLE_TESTING()

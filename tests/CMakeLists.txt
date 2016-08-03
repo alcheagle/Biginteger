@@ -20,8 +20,4 @@ set(AKS_DIR ${CMAKE_CURRENT_LIST_DIR}/../)
 FOREACH(subdir ${SUBDIRS})
     message("Adding test: " ${TESTS_DIR}/${subdir})
     add_subdirectory(${TESTS_DIR}/${subdir})
-
-    add_test(NAME ${subdir}
-        WORKING_DIRECTORY ${TESTS_DIR}/${subdir}
-        COMMAND ${TESTS_DIR}/${subdir}/bin/run_test)
 ENDFOREACH()

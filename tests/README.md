@@ -8,5 +8,5 @@ target_link_libraries(
 
 add_test(NAME ${subdir}
         WORKING_DIRECTORY ${TESTS_DIR}/${subdir}
-        COMMAND COMMAND)
+    COMMAND COMMAND)
 ```

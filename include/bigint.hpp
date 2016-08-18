@@ -15,8 +15,8 @@ namespace bigint{
 		//Constructors
 		UnsignedBigint();
 		UnsignedBigint(const UBIGGEST_TYPE&);
-		UnsignedBigint(std::string representation);
-		UnsignedBigint(std::string representation, unsigned int  base);
+		UnsignedBigint(const std::string &representation);
+		UnsignedBigint(const std::string &representation, unsigned int  base);
 		UnsignedBigint(const UnsignedBigint& b);
 		UnsignedBigint(unsigned char* bytes, unsigned int length); //FIXME endianness problems
 
@@ -120,6 +120,8 @@ namespace bigint{
 		unsigned int size() const;
 		
 		std::string to_string() const;
+	private:
+		void init_with_base(const std::string& representation, unsigned int base);
 	};
 }
 

@@ -22,7 +22,7 @@ namespace bigint {
 	} bint = {0x01020304};
 
 	return bint.c[0] == 1;
-    }
+    }*/
 
     static UBIGGEST_TYPE ipow(UBIGGEST_TYPE base, UBIGGEST_TYPE exp) {
 	UBIGGEST_TYPE result = 1;
@@ -34,12 +34,12 @@ namespace bigint {
 	}
 
 	return result;
-    }*/
+    }
 
     static UBIGGEST_TYPE dummy_log_2(UBIGGEST_TYPE index) {
 	UBIGGEST_TYPE targetlevel = 0;
 	while (index >>= 1) ++targetlevel;
-	
+
 	return targetlevel;
     }
 
@@ -54,11 +54,13 @@ namespace bigint {
     : number(b.number) {
     }
 
-    UnsignedBigint::UnsignedBigint(const UBIGGEST_TYPE& value) {
+    UnsignedBigint::UnsignedBigint(const UBIGGEST_TYPE& value)
+    : number() {
 	number.push_back(value);
     }
 
-    UnsignedBigint::UnsignedBigint(const std::string &representation) {
+    UnsignedBigint::UnsignedBigint(const std::string &representation)
+    : number() {
 	boost::smatch matches;
 	std::string *numb = NULL;
 	std::string *separator = NULL;
@@ -79,7 +81,7 @@ namespace bigint {
 	    BOOST_ASSERT_MSG(0, "not recognized number represetation");
 	}
 
-//	std::cout << std::dec << "match: " << *numb << " base: " << base << std::endl;
+	//	std::cout << std::dec << "match: " << *numb << " base: " << base << std::endl;
 
 	UBIGGEST_TYPE value = 0;
 	unsigned int inserted_chars = 0;
@@ -87,10 +89,10 @@ namespace bigint {
 	unsigned int n_separators = 0;
 
 	if (separator != NULL && separator->length() > 0) {
-//	    std::cout << "separator: '" << separator->at(0) << "'" << std::endl;
+	    //	    std::cout << "separator: '" << separator->at(0) << "'" << std::endl;
 
 	    n_separators = std::count(numb->begin(), numb->end(), separator->at(0));
-//	    std::cout << "n_separator: " << n_separators << std::endl;
+	    //	    std::cout << "n_separator: " << n_separators << std::endl;
 	}
 
 	unsigned int effective_length = numb->length() - n_separators;
@@ -113,18 +115,17 @@ namespace bigint {
 	    } else {
 		inserted_char = false;
 	    }
-
-//	    std::cout << std::dec << (inserted_chars * weight) << " mod " << ((sizeof (UBIGGEST_TYPE))*8) << " = " << ((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) << std::endl;
-//	    std::cout << std::setfill(' ') << std::setw(10) << "char: 0x" << std::hex << (unsigned int) actual << std::endl;
-//	    std::cout << std::setfill(' ') << std::setw(10) << "next: 0x" << std::hex << next << std::endl;
-//	    std::cout << std::setfill(' ') << std::setw(10) << "value: 0x" << std::hex << value << std::endl;
+	    //	    std::cout << std::dec << (inserted_chars * weight) << " mod " << ((sizeof (UBIGGEST_TYPE))*8) << " = " << ((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) << std::endl;
+	    //	    std::cout << std::setfill(' ') << std::setw(10) << "char: 0x" << std::hex << (unsigned int) actual << std::endl;
+	    //	    std::cout << std::setfill(' ') << std::setw(10) << "next: 0x" << std::hex << next << std::endl;
+	    //	    std::cout << std::setfill(' ') << std::setw(10) << "value: 0x" << std::hex << value << std::endl;
 
 	    value = value | (next << ((effective_length - (inserted_chars)) * weight));
 
-	    if ((((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) == 0 
-			|| (i + 1) == numb->length())
-		    && (inserted_char)) { 
-//		std::cout << "storing: 0x" << std::hex << value << std::endl;
+	    if ((((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) == 0
+		    || (i + 1) == numb->length())
+		    && (inserted_char)) {
+		//		std::cout << "storing: 0x" << std::hex << value << std::endl;
 		number.push_back(value);
 		value = 0;
 	    }
@@ -134,11 +135,13 @@ namespace bigint {
 	delete separator;
     }
 
-    UnsignedBigint::UnsignedBigint(const std::string &representation, unsigned int base) {
-	init_with_base(representation, base);
-    }
+    //    UnsignedBigint::UnsignedBigint(const std::string &representation, unsigned int base)
+    //    : number() {
+    //	init_with_base(representation, base);
+    //    }
 
-    UnsignedBigint::UnsignedBigint(unsigned char* bytes, unsigned int length) {
+    UnsignedBigint::UnsignedBigint(unsigned char* bytes, unsigned int length)
+    : number() {
 	UBIGGEST_TYPE value = 0;
 	for (unsigned int i = 0; i < length; i++) {
 	    UBIGGEST_TYPE next = ((UBIGGEST_TYPE) bytes[i]) << (((length - 1 - i) % sizeof (UBIGGEST_TYPE))*8);
@@ -156,12 +159,94 @@ namespace bigint {
 	}
     }
 
-    void UnsignedBigint::init_with_base(const std::string& representation, unsigned int base) {
-	//TODO decide how representation should be
-	//static unsigned long long upper_boound = std::pow(2, sizeof(UBIGGEST_TYPE));
-	BOOST_ASSERT_MSG(true, "construction not supported yet"); ///TODO throw exception instead
+    //    void UnsignedBigint::init_with_base(const std::string& representation, unsigned int base) {
+    //	//TODO decide how representation should be
+    //	//static unsigned long long upper_boound = std::pow(2, sizeof(UBIGGEST_TYPE));
+    //	BOOST_ASSERT_MSG(true, "construction not supported yet"); ///TODO throw exception instead
+    //
+    //	number.push_back(0);
+    //    }
 
-	number.push_back(0);
+    UnsignedBigint UnsignedBigint::sum(const UnsignedBigint& b) const {
+	UnsignedBigint n(b);
+	return n.selfSum(*this);
+    }
+
+    UnsignedBigint& UnsignedBigint::selfSum(const UnsignedBigint& b) {
+	static const UBIGGEST_TYPE MASK = ipow(2, sizeof (UBIGGEST_TYPE)*8 - 1);
+
+	unsigned char carrya = 0, carryb = 0;
+	for (long int i = b.number.size() - 1, j = number.size() - 1;
+		i >= 0 || j >= 0;
+		i--, j--) {
+	    UBIGGEST_TYPE act_a, act_b;
+
+	    std::cout << std::dec << "(" << i << ", " << j << ")" << std::endl;
+
+	    if (j >= 0) {
+		act_a = number.at(j) + carrya;
+		carrya = (act_a & MASK) >> (sizeof (UBIGGEST_TYPE)*8 - 1);
+
+		std::cout << std::hex << "act_a=" << act_a << " carrya=" << (unsigned int) carrya << std::endl;
+	    } else {
+		act_a = carrya;
+		number.insert(number.begin(), act_a);
+		carrya = 0;
+		j++;
+	    }
+
+	    if (i >= 0) {
+		act_b = b.number.at(i);
+		carryb = (act_b & MASK) >> (sizeof (UBIGGEST_TYPE)*8 - 1);
+
+		std::cout << std::hex << "act_b=" << act_b << " carryb=" << (unsigned int) carryb << std::endl;
+	    } else {
+		act_b = 0;
+		carryb = 0;
+	    }
+
+	    act_a += act_b;
+	    carrya += carryb;
+	    std::cout << std::hex << "act_a+act_b=" << act_a << " carrya+carryb=" << (unsigned int) carrya << std::endl;
+	    carrya = carrya >> 1;
+
+	    std::cout << std::endl;
+	    number.at(j) = act_a;
+	}
+
+	if (carrya > 0) {
+	    number.insert(number.begin(), carrya);
+	}
+
+	return *this;
+    }
+
+    UnsignedBigint UnsignedBigint::sum(const UBIGGEST_TYPE& n) const {
+	UnsignedBigint a(n);
+
+	return a.sum(*this);
+    }
+
+    UnsignedBigint& UnsignedBigint::selfSum(const UBIGGEST_TYPE& n) {
+	UnsignedBigint a(n);
+
+	return this->selfSum(a);
+    }
+
+    UnsignedBigint UnsignedBigint::operator+(const UnsignedBigint& a) const {
+	return sum(a);
+    }
+
+    UnsignedBigint& UnsignedBigint::operator+=(const UnsignedBigint& a) {
+	return selfSum(a);
+    }
+
+    UnsignedBigint UnsignedBigint::operator+(const UBIGGEST_TYPE& n) const {
+	return selfSum(n);
+    }
+
+    UnsignedBigint& UnsignedBigint::operator+=(const UBIGGEST_TYPE& n) {
+	return selfSum(n);
     }
 
     std::string UnsignedBigint::to_string() const {

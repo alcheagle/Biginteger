@@ -242,7 +242,7 @@ namespace bigint {
     }
 
     UnsignedBigint UnsignedBigint::operator+(const UBIGGEST_TYPE& n) const {
-	return selfSum(n);
+	return sum(n);
     }
 
     UnsignedBigint& UnsignedBigint::operator+=(const UBIGGEST_TYPE& n) {

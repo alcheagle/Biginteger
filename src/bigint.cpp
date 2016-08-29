@@ -284,5 +284,49 @@ namespace bigint {
 	a = s;
 	return in;
     }
+
+    char UnsignedBigint::compare(UnsignedBigint const &a) const {
+	char res = 0;
+	
+	if (this->size() < a.size()) {
+	    res = -1;
+	} else if (this->size() > a.size()) {
+	    res = 1;
+	} else {
+	    for (int i = number.size()-1; i >= 0 && res == 0; i--) {
+		if (number.at(i) < a.number.at(i)) {
+		    res = -1;
+		} else if (number.at(i) > a.number.at(i)) {
+		    res = 1;
+		}
+	    }
+	}
+
+	return res;
+    }
+
+    bool UnsignedBigint::operator<(const UnsignedBigint &a) const {
+	return this->compare(a) == -1;
+    }
+
+    bool UnsignedBigint::operator>(const UnsignedBigint &a) const {
+	return this->compare(a) == 1;
+    }
+
+    bool UnsignedBigint::operator<=(const UnsignedBigint &a) const {
+	return this->compare(a) <= 0;
+    }
+
+    bool UnsignedBigint::operator>=(const UnsignedBigint &a) const {
+	return this->compare(a) >= 0;
+    }
+
+    bool UnsignedBigint::operator==(const UnsignedBigint &a) const {
+	return this->compare(a) == 0;
+    }
+
+    unsigned int UnsignedBigint::size() const {
+	return number.size() * sizeof (UBIGGEST_TYPE)*8;
+    }
 }
 

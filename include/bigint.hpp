@@ -72,7 +72,7 @@ namespace bigint {
 	UnsignedBigint &operator%=(int const &);
 
 	//Compare
-	int compare(UnsignedBigint const &) const; //0 a == b, -1 a < b, 1 a > b
+	char compare(UnsignedBigint const &) const; //0 a == b, -1 a < b, 1 a > b
 	bool operator<(const UnsignedBigint &) const;
 	bool operator>(const UnsignedBigint &) const;
 	bool operator<=(const UnsignedBigint &) const;

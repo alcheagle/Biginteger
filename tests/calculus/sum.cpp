@@ -4,6 +4,11 @@
 using namespace std;
 using namespace bigint;
 
+/*
+ * FIXME check the results
+ * TODOS: add further values for tests 
+ */
+
 int main() {
     {
 	unsigned char val0[] = {1};

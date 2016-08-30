@@ -11,7 +11,7 @@ namespace bigint {
 
     class UnsignedBigint {
     private:
-	std::vector<UBIGGEST_TYPE> number;
+	std::vector<UBIGGEST_TYPE> number; //number[0] is the most sigificative word and number[size-1] is the less significative
     public:
 	//Constructors
 	UnsignedBigint();
@@ -83,7 +83,7 @@ namespace bigint {
 	UnsignedBigint operator=(const UBIGGEST_TYPE&);
 
 	//Access
-	int operator[](const int &);
+	int operator[](const unsigned int &);
 
 	//Input&Output
 	friend std::istream &operator>>(std::istream &, UnsignedBigint &);

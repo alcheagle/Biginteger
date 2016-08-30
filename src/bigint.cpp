@@ -6,6 +6,7 @@
 #include <boost/assert.hpp>
 #include <cmath>
 #include <algorithm>
+#include <stack>
 
 namespace bigint {
     //static const boost::regex number_regex1("(0x)([0-9a-fA-F]{1,})|(0)([0-7]{1,})|([0-9]{1,})");
@@ -85,20 +86,16 @@ namespace bigint {
 
 	UBIGGEST_TYPE value = 0;
 	unsigned int inserted_chars = 0;
-
-	unsigned int n_separators = 0;
-
-	if (separator != NULL && separator->length() > 0) {
-	    //	    std::cout << "separator: '" << separator->at(0) << "'" << std::endl;
-
-	    n_separators = std::count(numb->begin(), numb->end(), separator->at(0));
-	    //	    std::cout << "n_separator: " << n_separators << std::endl;
-	}
-
-	unsigned int effective_length = numb->length() - n_separators;
 	unsigned int weight = dummy_log_2(base);
+	
+	/*
+	 * in order to parse the string and create the words vector I need to start from the bottom
+	 * of the string and store the words in reversed order. TODO find a better way than using a 
+	 * stack, I don't think recursion could solve this problem better
+	 */
+	std::stack<UBIGGEST_TYPE> reverser;
 
-	for (unsigned int i = 0; i < numb->length(); i++) {
+	for (int i = numb->length() - 1; i >= 0; i--) {
 	    char actual = numb->at(i);
 	    UBIGGEST_TYPE next = 0;
 	    bool inserted_char = true;
@@ -115,20 +112,29 @@ namespace bigint {
 	    } else {
 		inserted_char = false;
 	    }
-	    //	    std::cout << std::dec << (inserted_chars * weight) << " mod " << ((sizeof (UBIGGEST_TYPE))*8) << " = " << ((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) << std::endl;
-	    //	    std::cout << std::setfill(' ') << std::setw(10) << "char: 0x" << std::hex << (unsigned int) actual << std::endl;
-	    //	    std::cout << std::setfill(' ') << std::setw(10) << "next: 0x" << std::hex << next << std::endl;
-	    //	    std::cout << std::setfill(' ') << std::setw(10) << "value: 0x" << std::hex << value << std::endl;
+	    //std::cout << std::dec << (inserted_chars * weight) << " mod " << ((sizeof (UBIGGEST_TYPE))*8) << " = " << ((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) << std::endl;
+	    //std::cout << std::setfill(' ') << std::setw(10) << "char: 0x" << std::hex << (unsigned int) actual << std::endl;
+	    //std::cout << std::setfill(' ') << std::setw(10) << "next: 0x" << std::hex << next << std::endl;
+	    //std::cout << std::setfill(' ') << std::setw(10) << "value: 0x" << std::hex << value << std::endl;
 
-	    value = value | (next << ((effective_length - (inserted_chars)) * weight));
+	    value = value | (next << ((inserted_chars - 1) * weight));
 
 	    if ((((inserted_chars * weight) % (sizeof (UBIGGEST_TYPE)*8)) == 0
-		    || (i + 1) == numb->length())
+		    || i == 0)
 		    && (inserted_char)) {
-		//		std::cout << "storing: 0x" << std::hex << value << std::endl;
-		number.push_back(value);
+		//std::cout << "storingstack: 0x" << std::hex << value << std::endl;
+		//number.push_back(value);
+		reverser.push(value);
 		value = 0;
 	    }
+	}
+
+	number.reserve(reverser.size());
+
+	while (!reverser.empty()) {
+	    //std::cout << "storing: 0x" << std::hex << reverser.top() << std::endl;
+	    number.push_back(reverser.top());
+	    reverser.pop();
 	}
 
 	delete numb;
@@ -181,13 +187,13 @@ namespace bigint {
 		i--, j--) {
 	    UBIGGEST_TYPE act_a, act_b;
 
-	    std::cout << std::dec << "(" << i << ", " << j << ")" << std::endl;
+	    //std::cout << std::dec << "(" << i << ", " << j << ")" << std::endl;
 
 	    if (j >= 0) {
 		act_a = number.at(j) + carrya;
 		carrya = (act_a & MASK) >> (sizeof (UBIGGEST_TYPE)*8 - 1);
 
-		std::cout << std::hex << "act_a=" << act_a << " carrya=" << (unsigned int) carrya << std::endl;
+		//std::cout << std::hex << "act_a=" << act_a << " carrya=" << (unsigned int) carrya << std::endl;
 	    } else {
 		act_a = carrya;
 		number.insert(number.begin(), act_a);
@@ -199,7 +205,7 @@ namespace bigint {
 		act_b = b.number.at(i);
 		carryb = (act_b & MASK) >> (sizeof (UBIGGEST_TYPE)*8 - 1);
 
-		std::cout << std::hex << "act_b=" << act_b << " carryb=" << (unsigned int) carryb << std::endl;
+		//std::cout << std::hex << "act_b=" << act_b << " carryb=" << (unsigned int) carryb << std::endl;
 	    } else {
 		act_b = 0;
 		carryb = 0;
@@ -207,10 +213,10 @@ namespace bigint {
 
 	    act_a += act_b;
 	    carrya += carryb;
-	    std::cout << std::hex << "act_a+act_b=" << act_a << " carrya+carryb=" << (unsigned int) carrya << std::endl;
+	    //std::cout << std::hex << "act_a+act_b=" << act_a << " carrya+carryb=" << (unsigned int) carrya << std::endl;
 	    carrya = carrya >> 1;
 
-	    std::cout << std::endl;
+	    //std::cout << std::endl;
 	    number.at(j) = act_a;
 	}
 
@@ -287,13 +293,13 @@ namespace bigint {
 
     char UnsignedBigint::compare(UnsignedBigint const &a) const {
 	char res = 0;
-	
+
 	if (this->size() < a.size()) {
 	    res = -1;
 	} else if (this->size() > a.size()) {
 	    res = 1;
 	} else {
-	    for (int i = number.size()-1; i >= 0 && res == 0; i--) {
+	    for (int i = number.size() - 1; i >= 0 && res == 0; i--) {
 		if (number.at(i) < a.number.at(i)) {
 		    res = -1;
 		} else if (number.at(i) > a.number.at(i)) {
@@ -329,4 +335,3 @@ namespace bigint {
 	return number.size() * sizeof (UBIGGEST_TYPE)*8;
     }
 }
-

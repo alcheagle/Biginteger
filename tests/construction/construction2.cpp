@@ -87,6 +87,35 @@ int main(int argc, char** argv) {
 	n.push_back(p15);
 	//cout << endl;
     }
+    {
+	pair<UnsignedBigint*, std::string> p7(new UnsignedBigint("0x1 0000000000000000"), "0x0000000000000001 0000000000000000");
+	n.push_back(p7);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p8(new UnsignedBigint("0x1 0000000000000001"), "0x0000000000000001 0000000000000001");
+	n.push_back(p8);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p9(new UnsignedBigint("0x55 0000000000000010"), "0x0000000000000055 0000000000000010");
+	n.push_back(p9);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p10(new UnsignedBigint("0x32 0000000000000100"), "0x0000000000000032 0000000000000100");
+	n.push_back(p10);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p11(new UnsignedBigint("0x6503 0000000ab3232412"), "0x0000000000006503 0000000ab3232412");
+	n.push_back(p11);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p12(new UnsignedBigint("0x1234567 0000000cd1234567"), "0x0000000001234567 0000000cd1234567");
+	n.push_back(p12);
+	//cout << endl;
+
+	pair<UnsignedBigint*, std::string> p13(new UnsignedBigint("0x2345612"), "0x0000000002345612");
+	n.push_back(p13);
+	//cout << endl;
+    }
 //    {
 //	pair<UnsignedBigint*, std::string> p7(new UnsignedBigint("0"), "0x0");
 //	n.push_back(p7);

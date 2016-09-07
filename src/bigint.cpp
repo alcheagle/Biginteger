@@ -87,7 +87,7 @@ namespace bigint {
 	UBIGGEST_TYPE value = 0;
 	unsigned int inserted_chars = 0;
 	unsigned int weight = dummy_log_2(base);
-	
+
 	/*
 	 * in order to parse the string and create the words vector I need to start from the bottom
 	 * of the string and store the words in reversed order. TODO find a better way than using a 
@@ -173,11 +173,6 @@ namespace bigint {
     //	number.push_back(0);
     //    }
 
-    UnsignedBigint UnsignedBigint::sum(const UnsignedBigint& b) const {
-	UnsignedBigint n(b);
-	return n.selfSum(*this);
-    }
-
     UnsignedBigint& UnsignedBigint::selfSum(const UnsignedBigint& b) {
 	static const UBIGGEST_TYPE MASK = ipow(2, sizeof (UBIGGEST_TYPE)*8 - 1);
 
@@ -226,7 +221,24 @@ namespace bigint {
 
 	return *this;
     }
+    
+    UnsignedBigint& UnsignedBigint::selfSub(const UnsignedBigint& b){ 
+	//This needs the creation of SignedBigInteget. an assertion is thrown if this < b
+	
+	if(*this < b) {
+	     BOOST_ASSERT_MSG(0, "Subtraction with negative result not supported yet");
+	} else {
+	    
+	}
+	
+	return *this;
+    }
 
+    UnsignedBigint UnsignedBigint::sum(const UnsignedBigint& b) const {
+	UnsignedBigint n(b);
+	return n.selfSum(*this);
+    }
+    
     UnsignedBigint UnsignedBigint::sum(const UBIGGEST_TYPE& n) const {
 	UnsignedBigint a(n);
 
@@ -239,6 +251,23 @@ namespace bigint {
 	return this->selfSum(a);
     }
 
+    UnsignedBigint UnsignedBigint::sub(const UnsignedBigint& b) const {
+	UnsignedBigint n(b);
+	return n.selfSub(*this);
+    }
+    
+    UnsignedBigint UnsignedBigint::sub(const UBIGGEST_TYPE &n) const {
+	UnsignedBigint a(n);
+
+	return a.sub(*this);
+    }
+    
+    UnsignedBigint& UnsignedBigint::selfSub(const UBIGGEST_TYPE&n) {
+	UnsignedBigint a(n);
+
+	return this->selfSub(a);
+    }
+    
     UnsignedBigint UnsignedBigint::operator+(const UnsignedBigint& a) const {
 	return sum(a);
     }
@@ -253,6 +282,22 @@ namespace bigint {
 
     UnsignedBigint& UnsignedBigint::operator+=(const UBIGGEST_TYPE& n) {
 	return selfSum(n);
+    }
+    
+    UnsignedBigint UnsignedBigint::operator-(UnsignedBigint const &a) const {
+	return sub(a);
+    }
+    
+    UnsignedBigint& UnsignedBigint::operator-=(UnsignedBigint const &a) {
+	return selfSub(a);
+    }
+    
+    UnsignedBigint UnsignedBigint::operator-(const UBIGGEST_TYPE& n) const {
+	return sub(n);
+    }
+    
+    UnsignedBigint& UnsignedBigint::operator-=(const UBIGGEST_TYPE& n) {
+	return selfSub(n);
     }
 
     std::string UnsignedBigint::to_string() const {
@@ -329,6 +374,10 @@ namespace bigint {
 
     bool UnsignedBigint::operator==(const UnsignedBigint &a) const {
 	return this->compare(a) == 0;
+    }
+    
+    bool UnsignedBigint::operator!=(const UnsignedBigint &a) const {
+	return this->compare(a) != 0;
     }
 
     unsigned int UnsignedBigint::size() const {

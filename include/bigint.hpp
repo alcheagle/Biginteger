@@ -82,6 +82,7 @@ namespace bigint {
 	bool operator<=(const UnsignedBigint &) const;
 	bool operator>=(const UnsignedBigint &) const;
 	bool operator==(const UnsignedBigint &) const;
+	bool operator!=(const UnsignedBigint &) const;
 
 	//Allocation
 	UnsignedBigint operator=(const UBIGGEST_TYPE&);

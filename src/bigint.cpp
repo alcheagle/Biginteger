@@ -87,7 +87,7 @@ namespace bigint {
 	UBIGGEST_TYPE value = 0;
 	unsigned int inserted_chars = 0;
 	unsigned int weight = dummy_log_2(base);
-	
+
 	/*
 	 * in order to parse the string and create the words vector I need to start from the bottom
 	 * of the string and store the words in reversed order. TODO find a better way than using a 
@@ -173,11 +173,6 @@ namespace bigint {
     //	number.push_back(0);
     //    }
 
-    UnsignedBigint UnsignedBigint::sum(const UnsignedBigint& b) const {
-	UnsignedBigint n(b);
-	return n.selfSum(*this);
-    }
-
     UnsignedBigint& UnsignedBigint::selfSum(const UnsignedBigint& b) {
 	static const UBIGGEST_TYPE MASK = ipow(2, sizeof (UBIGGEST_TYPE)*8 - 1);
 
@@ -219,40 +214,94 @@ namespace bigint {
 	    //std::cout << std::endl;
 	    number.at(j) = act_a;
 	}
-
 	if (carrya > 0) {
 	    number.insert(number.begin(), carrya);
 	}
 
 	return *this;
+
     }
 
-    UnsignedBigint UnsignedBigint::sum(const UBIGGEST_TYPE& n) const {
-	UnsignedBigint a(n);
+    //    void UnsignedBigint::init_with_base(const std::string& representation, unsigned int base) {
+    //	//TODO decide how representation should be
+    //	//static unsigned long long upper_boound = std::pow(2, sizeof(UBIGGEST_TYPE));
+    //	BOOST_ASSERT_MSG(true, "construction not supported yet"); ///TODO throw exception instead
+    //
+    //	number.push_back(0);
+    //    }
 
+    UnsignedBigint & UnsignedBigint::selfSub(const UnsignedBigint & b) {
+	//This needs the creation of SignedBigInteget. an assertion is thrown if this < b
+
+	if (*this < b) {
+	    BOOST_ASSERT_MSG(0, "Subtraction with negative result not supported yet");
+	} else {
+
+	}
+
+	return *this;
+    }
+
+    UnsignedBigint UnsignedBigint::sum(const UnsignedBigint & b) const {
+	UnsignedBigint n(b);
+	return n.selfSum(*this);
+    }
+
+    UnsignedBigint UnsignedBigint::sum(const UBIGGEST_TYPE & n) const {
+	UnsignedBigint a(n);
 	return a.sum(*this);
     }
 
-    UnsignedBigint& UnsignedBigint::selfSum(const UBIGGEST_TYPE& n) {
+    UnsignedBigint & UnsignedBigint::selfSum(const UBIGGEST_TYPE & n) {
 	UnsignedBigint a(n);
-
 	return this->selfSum(a);
     }
 
-    UnsignedBigint UnsignedBigint::operator+(const UnsignedBigint& a) const {
+    UnsignedBigint UnsignedBigint::sub(const UnsignedBigint & b) const {
+	UnsignedBigint n(b);
+	return n.selfSub(*this);
+    }
+
+    UnsignedBigint UnsignedBigint::sub(const UBIGGEST_TYPE & n) const {
+	UnsignedBigint a(n);
+	return a.sub(*this);
+    }
+
+    UnsignedBigint & UnsignedBigint::selfSub(const UBIGGEST_TYPE & n) {
+	UnsignedBigint a(n);
+	return this->selfSub(a);
+    }
+
+    UnsignedBigint UnsignedBigint::operator+(const UnsignedBigint & a) const {
 	return sum(a);
     }
 
-    UnsignedBigint& UnsignedBigint::operator+=(const UnsignedBigint& a) {
+    UnsignedBigint & UnsignedBigint::operator+=(const UnsignedBigint & a) {
 	return selfSum(a);
     }
 
-    UnsignedBigint UnsignedBigint::operator+(const UBIGGEST_TYPE& n) const {
+    UnsignedBigint UnsignedBigint::operator+(const UBIGGEST_TYPE & n) const {
 	return sum(n);
     }
 
-    UnsignedBigint& UnsignedBigint::operator+=(const UBIGGEST_TYPE& n) {
+    UnsignedBigint & UnsignedBigint::operator+=(const UBIGGEST_TYPE & n) {
 	return selfSum(n);
+    }
+
+    UnsignedBigint UnsignedBigint::operator-(UnsignedBigint const &a) const {
+	return sub(a);
+    }
+
+    UnsignedBigint & UnsignedBigint::operator-=(UnsignedBigint const &a) {
+	return selfSub(a);
+    }
+
+    UnsignedBigint UnsignedBigint::operator-(const UBIGGEST_TYPE & n) const {
+	return sub(n);
+    }
+
+    UnsignedBigint & UnsignedBigint::operator-=(const UBIGGEST_TYPE & n) {
+	return selfSub(n);
     }
 
     std::string UnsignedBigint::to_string() const {
@@ -273,7 +322,7 @@ namespace bigint {
 	return ss.str();
     }
 
-    std::ostream &operator<<(std::ostream &out, const UnsignedBigint &a) {
+    std::ostream &operator<<(std::ostream &out, const UnsignedBigint & a) {
 	out << "0x" << std::hex;
 	out << a.number[0];
 
@@ -284,7 +333,7 @@ namespace bigint {
 	return out;
     }
 
-    std::istream &operator>>(std::istream &in, UnsignedBigint &a) {
+    std::istream &operator>>(std::istream &in, UnsignedBigint & a) {
 	std::string s;
 	in >> s;
 	a = s;
@@ -311,24 +360,28 @@ namespace bigint {
 	return res;
     }
 
-    bool UnsignedBigint::operator<(const UnsignedBigint &a) const {
+    bool UnsignedBigint::operator<(const UnsignedBigint & a) const {
 	return this->compare(a) == -1;
     }
 
-    bool UnsignedBigint::operator>(const UnsignedBigint &a) const {
+    bool UnsignedBigint::operator>(const UnsignedBigint & a) const {
 	return this->compare(a) == 1;
     }
 
-    bool UnsignedBigint::operator<=(const UnsignedBigint &a) const {
+    bool UnsignedBigint::operator<=(const UnsignedBigint & a) const {
 	return this->compare(a) <= 0;
     }
 
-    bool UnsignedBigint::operator>=(const UnsignedBigint &a) const {
+    bool UnsignedBigint::operator>=(const UnsignedBigint & a) const {
 	return this->compare(a) >= 0;
     }
 
-    bool UnsignedBigint::operator==(const UnsignedBigint &a) const {
+    bool UnsignedBigint::operator==(const UnsignedBigint & a) const {
 	return this->compare(a) == 0;
+    }
+
+    bool UnsignedBigint::operator!=(const UnsignedBigint & a) const {
+	return this->compare(a) != 0;
     }
 
     unsigned int UnsignedBigint::size() const {

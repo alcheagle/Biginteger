@@ -1,5 +1,5 @@
-#ifndef DODECAHEDRON_BIGINT_H_
-#define DODECAHEDRON_BIGINT_H_
+#ifndef BIGINT_H
+#define BIGINT_H
 
 #include <vector>
 #include <iostream>
@@ -71,6 +71,10 @@ namespace bigint {
 	UnsignedBigint operator%(long long const &);
 	UnsignedBigint &operator%=(int const &);
 
+	//division and module: the first is the quotient and the second is the remainder
+	std::pair<UnsignedBigint, UnsignedBigint> divisionAndModule(const UnsignedBigint&);
+	std::pair<UnsignedBigint, UnsignedBigint> divisionAndModule(const UBIGGEST_TYPE&);
+	
 	//Compare
 	char compare(UnsignedBigint const &) const; //0 a == b, -1 a < b, 1 a > b
 	bool operator<(const UnsignedBigint &) const;

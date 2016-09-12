@@ -125,6 +125,8 @@ namespace bigint {
 	//size
 	unsigned int size() const;
 
+	unsigned long numberOfZeros();
+	
 	std::string to_string() const;
 	std::string pretty_to_string() const;
     private:
